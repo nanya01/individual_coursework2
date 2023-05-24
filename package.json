@@ -1,0 +1,9 @@
+{
+    "author": "Peter",
+    "version": "1.0.0",
+    "scripts": {},
+    "dependencies": {
+        "express": "^4.18.2",
+        "mongodb": "3.6"
+    }
+}
