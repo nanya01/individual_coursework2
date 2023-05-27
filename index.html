@@ -1,0 +1,344 @@
+<html>
+
+<head>
+    <title>Vue.js Pet Depot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link rel="stylesheet" href="lessons.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="lessons.js"></script>
+    
+</head>
+
+<body>
+    <div id="app">
+        <header><h1>{{sitename}}</h1>
+            <button v-on:click="showCheckout" v-if=" showCheckoutButton"> {{cartItemCount}}
+                <span class="fas fa-cart-plus">Checkout</span>
+            </button>
+            <button  v-else disabled > {{cartItemCount}}
+                <span class="fas fa-cart-plus">Checkout</span>
+            </button>
+        </header>
+        <main>
+           <div v-if="showProduct">
+            <div>
+                <input type="text" v-model = "searchValue" placeholder="search by subject only">
+                <select v-model="selectedFilter">
+                    <option disabled value="">Filter</option>
+                    <option v-for="filter in filters" v-bind:value="filter"  v-bind:selected="filter === selectedFilter">{{filter}}</option>
+                </select>
+                <select v-model="selectedArrangement">
+                    <option disabled value="">Filter</option>
+                    <option v-for="filter in arrangement" v-bind:value="filter"  v-bind:selected="filter === selectedArrangement">{{filter}}</option>
+                </select>
+            </div>
+            <div class="lessons"  v-if="searchResultValue" v-for="product in searchResult">
+                <figure>
+                    <img v-bind:src="product.image">
+                </figure>
+                <p>Subject: {{product.Subject}}</p>
+            <p>location: {{product.Location}}</p>
+                   
+                    <p>Price: {{product.Price}}</p>
+                    <p>Spaces: {{product.Space}}</p>
+                 
+            
+                    <button class="myBtn" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
+               
+                  
+                    <button class="myBtn" v-else disabled>Add to Cart</button>
+            </div>
+            <div class="lessons" v-else   v-for="product in sortedProducts">
+                <figure><!-- bind the 'src' attribute to the 'product.image' in 'data' -->
+                    <img v-bind:src="product.image">
+                </figure>
+                <p>Subject: {{product.Subject}}</p>
+            <p>location: {{product.Location}}</p>
+                    <!-- The double curly brackets is the shorter version of 'v-text' -->
+                    <p>Price: {{product.Price}}</p>
+                    <p>Spaces: {{product.Space}}</p>
+                 
+            
+                    <button class="myBtn" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
+               
+                  
+                    <button class="myBtn" v-else disabled>Add to Cart</button>
+            </div>
+        
+           </div>
+            <div v-else>
+                        <h2>Checkout</h2>
+                        <p>
+                            <strong>First Name:</strong>
+                            <input v-model.trim = "order.firstName">
+                        </p>
+                       <p>
+                        <strong>Last Name:</strong>
+                        <input v-model.trim = "order.lastName">
+                       </p>
+                      
+                        <p><strong>Phone number:</strong>
+                            <input v-model.number="order.Phone" type="tel"></p>
+                        </p>
+                       </p>
+                    
+                       <h2>Order Information</h2>
+                       <div class="lessons" v-for="item in cart">
+                        <p>Subject: {{item.Subject}}</p>
+                        <p>location: {{item.Location}}</p>
+                                <!-- The double curly brackets is the shorter version of 'v-text' -->
+                                <p>Price: {{item.Price}}</p>
+                                <p>Spaces: {{item.Space}}</p>
+                             
+                        
+                                <button class="myBtn" v-on:click="removeFromCart(item)">Remove from Cart</button>
+                           
+                              
+                              
+                            
+                             
+                       </div>
+                       <button v-on:click="submitForm">Place Order</button>
+           </div>
+        </main>
+        </div>
+      
+        <script type="text/javascript">
+            
+        var webstore = new Vue({
+            el: '#app',
+            data: {
+                sitename: 'After School Lessons',
+                product: [],
+            
+                cart: [],
+                showProduct: true,
+                searchValue:'',
+              
+                order:{
+                    firstName :'',
+                    lastName: '',
+                     Phone: ''
+                },
+                selectedFilter: "Location",
+            filters:[
+                    "Subject",
+                    "Location",
+                    "Price",
+                    "Availability"
+                ],
+
+                selectedArrangement:"ascending",
+                arrangement:[
+                    "ascending",
+                    "descending"
+                ]
+
+            },
+          
+            methods: {
+                addToCart(product) {
+                   this.cart.push(product)  
+                  product.Space =  product.Space -1; 
+                  console.log(product.Space)
+                   console.log(this.selectedFilter)     
+
+                    
+                },
+                
+                removeFromCart(item) {
+                   console.log('hello')
+                    const index = this.cart.indexOf(item);
+                    if (index > -1) { // only splice array when item is found
+                        console.log('hey')
+                    this.cart.splice(index, 1); // 2nd parameter means remove one item only
+                    }
+                  item.Space =  item.Space +1; 
+                  console.log(product.Space)
+                   console.log(this.selectedFilter)     
+
+                    
+                },
+                showCheckout() {
+                    // console.log(this.showProduct);
+                    this.showProduct = this.showProduct ? false : true;
+                },
+                submitForm(){
+                    alert('Order submitted!')
+                },
+                canAddToCart(product) { return product.Space > this.cartCount(product.id); },
+                cartCount(id) {
+                    let count = 0;
+                     for (let i = 0; i < this.cart.length; i++) {
+                         if (this.cart[i] === id) {
+                            count++;
+                         }
+                         }
+                          return count;
+                          console.log(count)
+            }
+        },
+       
+            computed: {
+                searchResult() {
+  let searchItems = this.product
+  
+  if (this.searchValue != '' && this.searchValue) {
+        searchItems = searchItems.filter((item) => {
+          return item.Subject
+            .toUpperCase()
+            .includes(this.searchValue.toUpperCase())
+        })
+      }
+    return searchItems
+  },
+  searchResultValue(){
+   return this.searchValue != ''
+  },
+   
+    
+                showCheckoutButton(){
+                   return this.cart.length > 0;
+                },
+                cartItemCount() {
+                    return this.cart.length;
+                },
+                sortedProducts(){
+                   
+                   if(this.selectedFilter == "Subject" ){
+                    if(this.selectedArrangement == "ascending"){
+                        let productsArray = this.product.slice(0)
+                    function compare(a,b){
+                        let fa = a.Subject.toLowerCase(), fb = b.Subject.toLowerCase();
+                        if(fa > fb)
+                        return 1;
+
+                        if(fa < fb)
+                         return -1;
+
+                         return 0;
+                    }
+
+                    return productsArray.sort(compare);
+                    }else{
+                    let productsArray = this.product.slice(0)
+                    function compare(a,b){
+                        let fa = a.Subject.toLowerCase(), fb = b.Subject.toLowerCase();
+                        if(fa < fb)
+                        return 1;
+
+                        if(fa > fb)
+                         return -1;
+
+                         return 0;
+                    }
+                    return productsArray.sort(compare);
+                   }
+                   
+                   }
+                        
+                   else if(this.selectedFilter === "Location"){
+                    if(this.selectedArrangement == "ascending"){
+                        let productsArray = this.product.slice(0)
+                    function compare(a,b){
+                        let fa = a.Location.toLowerCase(), fb = b.Location.toLowerCase();
+                        if(fa > fb)
+                        return 1;
+
+                        if(fa < fb)
+                         return -1;
+
+                         return 0;
+                    }
+                    return productsArray.sort(compare);
+                    }else{
+                    let productsArray = this.product.slice(0)
+                    function compare(a,b){
+                        let fa = a.Location.toLowerCase(), fb = b.Location.toLowerCase();
+                        if(fa < fb)
+                        return 1;
+
+                        if(fa > fb)
+                         return -1;
+
+                         return 0;
+                    }
+                    return productsArray.sort(compare);
+                   }
+                   
+
+                    
+                   }
+
+
+                   else if(this.selectedFilter == "Price"){
+                    if(this.selectedArrangement == "ascending"){
+                        let productsArray = this.product.slice(0)
+                    function compare(a,b){
+                        if(a.Price > b.Price)
+                        return 1;
+
+                        if(a.Price < b.Price)
+                         return -1;
+
+                         return 0;
+                    }
+
+                    return productsArray.sort(compare);
+                    }else{
+                    let productsArray = this.product.slice(0)
+                    function compare(a,b){
+                        if(a.Price < b.Price)
+                        return 1;
+
+                        if(a.Price > b.Price)
+                         return -1;
+
+                         return 0;
+                    }
+
+                    return productsArray.sort(compare);
+                   }
+                    
+                   }
+
+                   else if(this.selectedFilter == "Availability"){
+                    if(this.selectedArrangement == "ascending"){
+                        let productsArray = this.product.slice(0)
+                    function compare(a,b){
+                        if(a.Space > b.Space)
+                        return 1;
+
+                        if(a.Space < b.Space)
+                         return -1;
+
+                         return 0;
+                    }
+
+                    return productsArray.sort(compare);
+                    }else{
+                      let productsArray = this.product.slice(0)
+                    function compare(a,b){
+                        if(a.Space < b.Space)
+                        return 1;
+
+                        if(a.Space > b.Space)
+                         return -1;
+
+                         return 0;
+                    }
+
+                    return productsArray.sort(compare);
+                   }
+                   
+                   }
+                   
+
+                }
+                
+            },
+        });
+    </script>
+</body>
+
+</html>
