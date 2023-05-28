@@ -1,14 +1,14 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <title>Vue.js Pet Depot</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="lessons.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="lessons.js"></script>
+
     
 </head>
-
 <body>
     <div id="app">
         <header><h1>{{sitename}}</h1>
@@ -32,15 +32,16 @@
                     <option v-for="filter in arrangement" v-bind:value="filter"  v-bind:selected="filter === selectedArrangement">{{filter}}</option>
                 </select>
             </div>
+            <!-- search value -->
             <div class="lessons"  v-if="searchResultValue" v-for="product in searchResult">
                 <figure>
                     <img v-bind:src="product.image">
                 </figure>
-                <p>Subject: {{product.Subject}}</p>
-            <p>location: {{product.Location}}</p>
+                <p>Subject: {{product.topic}}</p>
+            <p>location: {{product.location}}</p>
                    
-                    <p>Price: {{product.Price}}</p>
-                    <p>Spaces: {{product.Space}}</p>
+                    <p>Price: {{product.price}}</p>
+                    <p>Spaces: {{product.space}}</p>
                  
             
                     <button class="myBtn" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
@@ -48,18 +49,19 @@
                   
                     <button class="myBtn" v-else disabled>Add to Cart</button>
             </div>
-            <div class="lessons" v-else   v-for="product in sortedProducts">
+        
+            <div class="lessons"  v-else  v-for="product in sortedProducts">
                 <figure><!-- bind the 'src' attribute to the 'product.image' in 'data' -->
                     <img v-bind:src="product.image">
                 </figure>
-                <p>Subject: {{product.Subject}}</p>
-            <p>location: {{product.Location}}</p>
+                <p>Subject: {{product.topic}}</p>
+            <p>Location: {{product.location}}</p>
                     <!-- The double curly brackets is the shorter version of 'v-text' -->
-                    <p>Price: {{product.Price}}</p>
-                    <p>Spaces: {{product.Space}}</p>
+                    <p>Price: {{product.price}}</p>
+                    <p>Spaces: {{product.space}}</p>
                  
             
-                    <button class="myBtn" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
+                    <button  class="myBtn" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
                
                   
                     <button class="myBtn" v-else disabled>Add to Cart</button>
@@ -84,11 +86,11 @@
                     
                        <h2>Order Information</h2>
                        <div class="lessons" v-for="item in cart">
-                        <p>Subject: {{item.Subject}}</p>
-                        <p>location: {{item.Location}}</p>
+                        <p>Subject: {{item.topic}}</p>
+                        <p>location: {{item.location}}</p>
                                 <!-- The double curly brackets is the shorter version of 'v-text' -->
-                                <p>Price: {{item.Price}}</p>
-                                <p>Spaces: {{item.Space}}</p>
+                                <p>Price: {{item.price}}</p>
+                                <p>Spaces: {{item.space}}</p>
                              
                         
                                 <button class="myBtn" v-on:click="removeFromCart(item)">Remove from Cart</button>
@@ -109,17 +111,18 @@
             el: '#app',
             data: {
                 sitename: 'After School Lessons',
-                product: [],
+                products: [],
             
                 cart: [],
                 showProduct: true,
                 searchValue:'',
               
                 order:{
-                    firstName :'',
-                    lastName: '',
-                     Phone: ''
+                    firstName :"",
+                    lastName: "",
+                     Phone: ""
                 },
+                orders:[],
                 selectedFilter: "Location",
             filters:[
                     "Subject",
@@ -135,13 +138,37 @@
                 ]
 
             },
+            created:
+          function(){
+            fetch('http://localhost:3000/collection/lessons').then(
+              function(response){
+                response.json().then(
+                  function(json){
+                      webstore.products = json
+                      console.log("lessons" + this.products)
+                      console.log("lessons json" + json)
+                      console.log("lessons webstore " + webstore.products[0]._id)
+                  }
+                )
+              }
+            )      
+        
+          
+        },      
           
             methods: {
                 addToCart(product) {
-                   this.cart.push(product)  
-                  product.Space =  product.Space -1; 
-                  console.log(product.Space)
-                   console.log(this.selectedFilter)     
+                    console.log("Product "+ product._id)
+                    if(this.cart.includes(product)){
+                        product.space =  product.space -1; 
+                        console.log("I'm in cart")
+                    }else{
+                        this.cart.push(product)  
+                  product.space =  product.space -1; 
+                  //console.log("Product " + product[0]._id)
+                   console.log(this.selectedFilter)  
+                    }
+                      
 
                     
                 },
@@ -153,8 +180,8 @@
                         console.log('hey')
                     this.cart.splice(index, 1); // 2nd parameter means remove one item only
                     }
-                  item.Space =  item.Space +1; 
-                  console.log(product.Space)
+                  item.space =  item.space +1; 
+                  console.log(product.space)
                    console.log(this.selectedFilter)     
 
                     
@@ -163,10 +190,58 @@
                     // console.log(this.showProduct);
                     this.showProduct = this.showProduct ? false : true;
                 },
+            
+                
                 submitForm(){
-                    alert('Order submitted!')
+                    if(this.order.firstName ==="" || this.order.lastName === "", this.order.Phone === ""){
+                    
+                        alert("Empty fields")
+                    }else{
+                        //this.orders.push(this.order)
+                        let newProductOrder = [];
+                        for(let i=0; i< this.cart.length; i++){
+                            console.log("Cart product Id: " + this.cart[0].space)
+                            let cartId = this.cart[i]._id;
+                            let newSpace = this.cart[i].space;
+                            newProductOrder.push({
+                                "lessonID": cartId,
+                                "newSpace": newSpace
+                            })
+                        }
+                    
+                        fetch("http://localhost:3000/collection/orders", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        "firstName": this.order.firstName,
+                        "lastName": this.order.lastName,
+                        "product": newProductOrder
+                    }),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                    
+                    }
+                }).then((response) => {
+                    for(let i = 0; i < newProductOrder.length; i++){
+                        console.log("new Id " + newProductOrder[0]["lessonID"]);
+                        let newProductId = newProductOrder[i]["lessonID"];
+                        let newSpace = newProductOrder[i]["newSpace"];
+                        fetch("http://localhost:3000/collection/lessons/"+newProductId, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                         "space": newSpace
+                    }),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                    
+                    }
+                })
+                    }
+                })               
+                        
+                    }
+                
                 },
-                canAddToCart(product) { return product.Space > this.cartCount(product.id); },
+                canAddToCart(product) { return product.space > this.cartCount(product.id); },
                 cartCount(id) {
                     let count = 0;
                      for (let i = 0; i < this.cart.length; i++) {
@@ -207,9 +282,9 @@
                    
                    if(this.selectedFilter == "Subject" ){
                     if(this.selectedArrangement == "ascending"){
-                        let productsArray = this.product.slice(0)
+                        let productsArray = this.products.slice(0)
                     function compare(a,b){
-                        let fa = a.Subject.toLowerCase(), fb = b.Subject.toLowerCase();
+                        let fa = a.topic.toLowerCase(), fb = b.topic.toLowerCase();
                         if(fa > fb)
                         return 1;
 
@@ -221,9 +296,9 @@
 
                     return productsArray.sort(compare);
                     }else{
-                    let productsArray = this.product.slice(0)
+                    let productsArray = this.products.slice(0)
                     function compare(a,b){
-                        let fa = a.Subject.toLowerCase(), fb = b.Subject.toLowerCase();
+                        let fa = a.topic.toLowerCase(), fb = b.topic.toLowerCase();
                         if(fa < fb)
                         return 1;
 
@@ -239,9 +314,9 @@
                         
                    else if(this.selectedFilter === "Location"){
                     if(this.selectedArrangement == "ascending"){
-                        let productsArray = this.product.slice(0)
+                        let productsArray = this.products.slice(0)
                     function compare(a,b){
-                        let fa = a.Location.toLowerCase(), fb = b.Location.toLowerCase();
+                        let fa = a.location.toLowerCase(), fb = b.location.toLowerCase();
                         if(fa > fb)
                         return 1;
 
@@ -252,9 +327,9 @@
                     }
                     return productsArray.sort(compare);
                     }else{
-                    let productsArray = this.product.slice(0)
+                    let productsArray = this.products.slice(0)
                     function compare(a,b){
-                        let fa = a.Location.toLowerCase(), fb = b.Location.toLowerCase();
+                        let fa = a.location.toLowerCase(), fb = b.location.toLowerCase();
                         if(fa < fb)
                         return 1;
 
@@ -273,12 +348,12 @@
 
                    else if(this.selectedFilter == "Price"){
                     if(this.selectedArrangement == "ascending"){
-                        let productsArray = this.product.slice(0)
+                        let productsArray = this.products.slice(0)
                     function compare(a,b){
-                        if(a.Price > b.Price)
+                        if(a.price > b.price)
                         return 1;
 
-                        if(a.Price < b.Price)
+                        if(a.price < b.price)
                          return -1;
 
                          return 0;
@@ -286,12 +361,12 @@
 
                     return productsArray.sort(compare);
                     }else{
-                    let productsArray = this.product.slice(0)
+                    let productsArray = this.products.slice(0)
                     function compare(a,b){
-                        if(a.Price < b.Price)
+                        if(a.price < b.price)
                         return 1;
 
-                        if(a.Price > b.Price)
+                        if(a.price > b.price)
                          return -1;
 
                          return 0;
@@ -304,12 +379,12 @@
 
                    else if(this.selectedFilter == "Availability"){
                     if(this.selectedArrangement == "ascending"){
-                        let productsArray = this.product.slice(0)
+                        let productsArray = this.products.slice(0)
                     function compare(a,b){
-                        if(a.Space > b.Space)
+                        if(a.space > b.space)
                         return 1;
 
-                        if(a.Space < b.Space)
+                        if(a.space < b.space)
                          return -1;
 
                          return 0;
@@ -317,12 +392,12 @@
 
                     return productsArray.sort(compare);
                     }else{
-                      let productsArray = this.product.slice(0)
+                      let productsArray = this.products.slice(0)
                     function compare(a,b){
-                        if(a.Space < b.Space)
+                        if(a.space < b.space)
                         return 1;
 
-                        if(a.Space > b.Space)
+                        if(a.space > b.space)
                          return -1;
 
                          return 0;
@@ -340,5 +415,5 @@
         });
     </script>
 </body>
-
 </html>
+
