@@ -32,8 +32,25 @@
                     <option v-for="filter in arrangement" v-bind:value="filter"  v-bind:selected="filter === selectedArrangement">{{filter}}</option>
                 </select>
             </div>
+
+            <div class="lessons"  v-if="searchResultValue"  v-for="product in sortedProducts">
+                <figure><!-- bind the 'src' attribute to the 'product.image' in 'data' -->
+                    <img v-bind:src="product.image">
+                </figure>
+                <p>Subject: {{product.topic}}</p>
+            <p>Location: {{product.location}}</p>
+                    <!-- The double curly brackets is the shorter version of 'v-text' -->
+                    <p>Price: {{product.price}}</p>
+                    <p>Spaces: {{product.space}}</p>
+                 
+            
+                    <button  class="myBtn" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
+               
+                  
+                    <button class="myBtn" v-else disabled>Add to Cart</button>
+            </div>
             <!-- search value -->
-            <div class="lessons"  v-if="searchResultValue" v-for="product in searchResult">
+            <div class="lessons"  v-else v-for="product in searchResult">
                 <figure>
                     <img v-bind:src="product.image">
                 </figure>
@@ -50,22 +67,7 @@
                     <button class="myBtn" v-else disabled>Add to Cart</button>
             </div>
         
-            <div class="lessons"  v-else  v-for="product in sortedProducts">
-                <figure><!-- bind the 'src' attribute to the 'product.image' in 'data' -->
-                    <img v-bind:src="product.image">
-                </figure>
-                <p>Subject: {{product.topic}}</p>
-            <p>Location: {{product.location}}</p>
-                    <!-- The double curly brackets is the shorter version of 'v-text' -->
-                    <p>Price: {{product.price}}</p>
-                    <p>Spaces: {{product.space}}</p>
-                 
-            
-                    <button  class="myBtn" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
-               
-                  
-                    <button class="myBtn" v-else disabled>Add to Cart</button>
-            </div>
+          
         
            </div>
             <div v-else>
@@ -93,11 +95,7 @@
                                 <p>Spaces: {{item.space}}</p>
                              
                         
-                                <button class="myBtn" v-on:click="removeFromCart(item)">Remove from Cart</button>
-                           
-                              
-                              
-                            
+                                <button class="myBtn" v-on:click="removeFromCart(item)">Remove from Cart</button>                 
                              
                        </div>
                        <button v-on:click="submitForm">Place Order</button>
@@ -122,7 +120,8 @@
                     lastName: "",
                      Phone: ""
                 },
-                orders:[],
+            
+            
                 selectedFilter: "Location",
             filters:[
                     "Subject",
@@ -151,10 +150,10 @@
                   }
                 )
               }
-            )      
-        
+            )     
           
         },      
+        
           
             methods: {
                 addToCart(product) {
@@ -214,6 +213,7 @@
                     body: JSON.stringify({
                         "firstName": this.order.firstName,
                         "lastName": this.order.lastName,
+                        "phoneNumber": this.order.Phone,
                         "product": newProductOrder
                     }),
                     headers: {
@@ -240,7 +240,7 @@
                         
                     }
                 
-                },
+                }, 
                 canAddToCart(product) { return product.space > this.cartCount(product.id); },
                 cartCount(id) {
                     let count = 0;
@@ -256,19 +256,29 @@
        
             computed: {
                 searchResult() {
-  let searchItems = this.product
-  
-  if (this.searchValue != '' && this.searchValue) {
-        searchItems = searchItems.filter((item) => {
-          return item.Subject
-            .toUpperCase()
-            .includes(this.searchValue.toUpperCase())
-        })
+    let searchItems = [];
+  if (this.searchValue != '' && this.searchValue.length > 3) {   
+       fetch('http://localhost:3000/collection/lessons/'+this.searchValue).then(
+              function(response){
+                response.json().then(
+                  function(json){
+                      searchItems.push(json)
+                      console.log("lessons json" + json['topic'])
+                    
+                      console.log("lessons searchitems " +searchItems[0].topic)
+                    
+    
+                  }
+                )
+              
+              }
+            )
+           return searchItems;           
       }
-    return searchItems
+     
   },
   searchResultValue(){
-   return this.searchValue != ''
+   return this.searchValue === '';
   },
    
     
