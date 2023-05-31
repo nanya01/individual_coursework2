@@ -1,0 +1,25 @@
+[{
+  "_id": {
+    "$oid": "6470f84b0024425428002478"
+  },
+  "topic": "math",
+  "location": "Dubai",
+  "price": 6000,
+  "space": 5
+},{
+  "_id": {
+    "$oid": "6472d4af9fac9812d4bc8601"
+  },
+  "topic": "chemistry",
+  "location": "Nigeria",
+  "price": 3000,
+  "space": 2
+},{
+  "_id": {
+    "$oid": "6477b85f456b50589c0fc6cb"
+  },
+  "topic": "webapp",
+  "location": "London",
+  "price": 4000,
+  "space": 5
+}]

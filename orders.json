@@ -1,0 +1,33 @@
+[{
+  "_id": {
+    "$oid": "64735a529fac9812d4bc861c"
+  },
+  "firstName": "nanya",
+  "lastName": "peter",
+  "product": [
+    {
+      "lessonID": "6470f84b0024425428002478",
+      "newSpace": 5
+    },
+    {
+      "lessonID": "6472d4af9fac9812d4bc8601",
+      "newSpace": 4
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "64748e1f4e6dc712c8ce9ac0"
+  },
+  "firstName": "nb",
+  "lastName": "hi",
+  "product": [
+    {
+      "lessonID": "6472d4af9fac9812d4bc8601",
+      "newSpace": 2
+    },
+    {
+      "lessonID": "6470f84b0024425428002478",
+      "newSpace": 3
+    }
+  ]
+}]
