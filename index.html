@@ -50,22 +50,21 @@
                     <button class="myBtn" v-else disabled>Add to Cart</button>
             </div>
             <!-- search value -->
-            <div class="lessons"  v-else v-for="product in searchResult">
+            <div class="lessons" v-else v-for="product in searchResults" :key="product.id">
                 <figure>
-                    <img v-bind:src="product.image">
+                  <img :src="product.image" />
                 </figure>
-                <p>Subject: {{product.topic}}</p>
-            <p>location: {{product.location}}</p>
-                   
-                    <p>Price: {{product.price}}</p>
-                    <p>Spaces: {{product.space}}</p>
-                 
-            
-                    <button class="myBtn" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to Cart</button>
-               
-                  
-                    <button class="myBtn" v-else disabled>Add to Cart</button>
-            </div>
+                <p>Subject: {{ product.topic }}</p>
+                <p>Location: {{ product.location }}</p>
+                <p>Price: {{ product.price }}</p>
+                <p>Spaces: {{ product.space }}</p>
+                <button class="myBtn" @click="addToCart(product)" v-if="canAddToCart(product)">
+                  Add to Cart
+                </button>
+                <button class="myBtn" disabled v-else>
+                  Add to Cart
+                </button>
+              </div>
         
           
         
@@ -251,32 +250,61 @@
                          }
                           return count;
                           console.log(count)
-            }
+            },
+            async searchResult() {
+      if (this.searchValue !== '') {
+        const response = await fetch(
+          `http://localhost:3000/collection/lessons/${this.searchValue}`
+        );
+        const json = await response.json();
+        const searchItems = [json];
+        console.log("lessons json: " + json['topic']);
+      console.log("lessons searchitems: " + searchItems[0].topic);
+        return searchItems;
+      } else {
+        return [];
+      }
+    },
+
         },
        
             computed: {
-                searchResult() {
-    let searchItems = [];
-  if (this.searchValue != '' && this.searchValue.length > 3) {   
-       fetch('http://localhost:3000/collection/lessons/'+this.searchValue).then(
-              function(response){
-                response.json().then(
-                  function(json){
-                      searchItems.push(json)
-                      console.log("lessons json" + json['topic'])
+
+                async searchResults() {
+      try {
+        console.log("I dey here")
+        let array = await this.searchResult();
+        console.log("I dey with oga " + array[0].topic);
+        return await this.searchResult();
+      } catch (error) {
+        console.error(error);
+        return []; // Return an empty array or handle the error case as needed
+      }
+    },
+//                 searchResult() {
+//                     let searchItems = []; 
+//   if (this.searchValue != '' && this.searchValue.length > 3) {  
+    
+//        fetch('http://localhost:3000/collection/lessons/'+this.searchValue).then(
+//               function(response){
+//                 response.json().then(
+//                   function(json){
+//                       searchItems.push(json)
+//                       console.log("lessons json" + json['topic'])
                     
-                      console.log("lessons searchitems " +searchItems[0].topic)
+//                       console.log("lessons searchitems " +searchItems[0].topic)
                     
     
-                  }
-                )
+//                   }
+//                 )
               
-              }
-            )
-           return searchItems;           
-      }
+//               }
+//             )
+                   
+//       }
+//        return searchItems;  
      
-  },
+//   },
   searchResultValue(){
    return this.searchValue === '';
   },

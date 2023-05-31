@@ -1,9 +1,13 @@
 {
     "author": "Peter",
     "version": "1.0.0",
-    "scripts": {},
+    "scripts": {
+        "start": "nodemon app.js"
+    },
     "dependencies": {
+        "cors": "^2.8.5",
         "express": "^4.18.2",
-        "mongodb": "3.6"
+        "mongodb": "3.6",
+        "nodemon": "^2.0.22"
     }
 }
