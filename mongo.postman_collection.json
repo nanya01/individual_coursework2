@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "4afd0e2c-d08c-4044-ba72-2cc011b227eb",
 		"name": "mongo",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "17795469",
 		"_collection_link": "https://planetary-shuttle-119709.postman.co/workspace/myworkspace~1d1b0642-4d9b-4dd5-9d42-5de2a8874765/collection/17795469-4afd0e2c-d08c-4044-ba72-2cc011b227eb?action=share&creator=17795469&source=collection_link"
 	},
@@ -24,17 +24,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "localhost:3000/collection/lessons",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"collection",
-						"lessons"
-					]
-				}
+				"url": "localhost:3000/collection/lessons"
 			},
 			"response": []
 		},
@@ -52,17 +42,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "localhost:3000/collection/lessons",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"collection",
-						"lessons"
-					]
-				}
+				"url": "localhost:3000/collection/lessons"
 			},
 			"response": []
 		},
@@ -80,18 +60,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "localhost:3000/collection/lessons/6470f84b0024425428002478",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"collection",
-						"lessons",
-						"6470f84b0024425428002478"
-					]
-				}
+				"url": "localhost:3000/collection/lessons/6470f84b0024425428002478"
 			},
 			"response": []
 		},
@@ -100,18 +69,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": {
-					"raw": "localhost:3000/collection/lessons/math",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"collection",
-						"lessons",
-						"math"
-					]
-				}
+				"url": "localhost:3000/collection/lessons/math"
 			},
 			"response": []
 		}

@@ -22,4 +22,60 @@
   "location": "London",
   "price": 4000,
   "space": 5
+},{
+  "_id": {
+    "$oid": "6479bbeef286c16f08576918"
+  },
+  "topic": "zoology",
+  "location": "Ethopia",
+  "price": 400,
+  "space": 5
+},{
+  "_id": {
+    "$oid": "6479bc02f286c16f08576919"
+  },
+  "topic": "economics",
+  "location": "Canada",
+  "price": 400,
+  "space": 5
+},{
+  "_id": {
+    "$oid": "6479bc2bf286c16f0857691a"
+  },
+  "topic": "biology",
+  "location": "Germany",
+  "price": 200,
+  "space": 5
+},{
+  "_id": {
+    "$oid": "6479bc63f286c16f0857691b"
+  },
+  "topic": "history",
+  "location": "France",
+  "price": 800,
+  "space": 5
+},{
+  "_id": {
+    "$oid": "6479bc80f286c16f0857691c"
+  },
+  "topic": "music",
+  "location": "Greece",
+  "price": 2000,
+  "space": 5
+},{
+  "_id": {
+    "$oid": "6479bcc1f286c16f0857691d"
+  },
+  "topic": "science",
+  "location": "Ethopia",
+  "price": 5000,
+  "space": 5
+},{
+  "_id": {
+    "$oid": "6479bceaf286c16f0857691e"
+  },
+  "topic": "Physics",
+  "location": "Spain",
+  "price": 8000,
+  "space": 5
 }]

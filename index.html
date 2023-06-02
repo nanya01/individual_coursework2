@@ -163,7 +163,6 @@
                     }else{
                         this.cart.push(product)  
                   product.space =  product.space -1; 
-                  //console.log("Product " + product[0]._id)
                    console.log(this.selectedFilter)  
                     }
                       
@@ -253,58 +252,64 @@
             },
             async searchResult() {
       if (this.searchValue !== '') {
+        
         const response = await fetch(
           `http://localhost:3000/collection/lessons/${this.searchValue}`
+        ).then(
+            function(response){
+                response.json().then(
+                  function(json){
+                      this.webstore.products = [json];
+                      console.log("lessons" + this.products)
+                      console.log("lessons json" + json)
+                     console.log("lessons webstore " + webstore.products[0]._id)
+                  }
+                )
+              }
         );
-        const json = await response.json();
-        const searchItems = [json];
-        console.log("lessons json: " + json['topic']);
-      console.log("lessons searchitems: " + searchItems[0].topic);
-        return searchItems;
+        
+ 
       } else {
-        return [];
+       
       }
     },
 
         },
        
             computed: {
-
-                async searchResults() {
-      try {
-        console.log("I dey here")
-        let array = await this.searchResult();
-        console.log("I dey with oga " + array[0].topic);
-        return await this.searchResult();
-      } catch (error) {
-        console.error(error);
-        return []; // Return an empty array or handle the error case as needed
-      }
-    },
-//                 searchResult() {
-//                     let searchItems = []; 
-//   if (this.searchValue != '' && this.searchValue.length > 3) {  
-    
-//        fetch('http://localhost:3000/collection/lessons/'+this.searchValue).then(
-//               function(response){
-//                 response.json().then(
-//                   function(json){
-//                       searchItems.push(json)
-//                       console.log("lessons json" + json['topic'])
-                    
-//                       console.log("lessons searchitems " +searchItems[0].topic)
-                    
-    
-//                   }
-//                 )
-              
-//               }
-//             )
-                   
-//       }
-//        return searchItems;  
-     
-//   },
+                 searchResults() {
+                    if(this.searchValue != ''){
+                        fetch(`http://localhost:3000/collection/lessons/${this.searchValue}`).then(
+              function(response){
+                response.json().then(
+                  function(json){
+                      webstore.products = [json]
+                      console.log("lessons" + this.products)
+                      console.log("lessons json" + json)
+                      console.log("lessons webstore " + webstore.products[0]._id)
+                  }
+                )
+              }
+            )     
+                    }else{
+                        fetch(`http://localhost:3000/collection/lessons/${this.searchValue}`).then(
+              function(response){
+                response.json().then(
+                  function(json){
+                      webstore.products = [json]
+                      console.log("lessons" + this.products)
+                      console.log("lessons json" + json)
+                      console.log("lessons webstore " + webstore.products[0]._id)
+                  }
+                )
+              }
+            )     
+          
+                    }
+                 
+            return this.products
+         
+    },    
   searchResultValue(){
    return this.searchValue === '';
   },
